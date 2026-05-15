@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rajesh Gurugubelli — AI Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080808;
+    --surface: #0f0f0f;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.14);
+    --text-primary: #f0f0ef;
+    --text-secondary: #888;
+    --text-dim: #444;
+    --accent: #e8e0d0;
+    --gold: #c9b06a;
+    --gold-dim: rgba(201,176,106,0.15);
+    --gold-glow: rgba(201,176,106,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s, opacity 0.3s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(201,176,106,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease-out, width 0.3s, height 0.3s;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 9997;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--text-primary); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-orb {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,176,106,0.07) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: orb-breathe 6s ease-in-out infinite;
+  }
+
+  @keyframes orb-breathe {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+    50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border: 1px solid var(--border-bright);
+    border-radius: 100px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fade-up 0.8s ease forwards 0.2s;
+  }
+  .hero-tag-dot {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fade-up 0.9s ease forwards 0.4s;
+  }
+
+  .hero-name-accent {
+    background: linear-gradient(135deg, var(--gold) 0%, #f0e6c0 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: shimmer 4s ease infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 400;
+    font-size: clamp(16px, 2vw, 22px);
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fade-up 0.9s ease forwards 0.6s;
+  }
+
+  .hero-tagline {
+    font-size: clamp(16px, 2vw, 19px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-secondary);
+    max-width: 560px;
+    line-height: 1.7;
+    border-left: 1px solid var(--gold);
+    padding-left: 20px;
+    opacity: 0;
+    animation: fade-up 0.9s ease forwards 0.8s;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    margin-top: 48px;
+    opacity: 0;
+    animation: fade-up 0.9s ease forwards 1s;
+  }
+  .btn-primary {
+    padding: 14px 28px;
+    background: var(--text-primary);
+    color: var(--bg);
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-101%);
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .btn-primary:hover::after { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-ghost {
+    padding: 14px 28px;
+    border: 1px solid var(--border-bright);
+    color: var(--text-secondary);
+    font-family: 'Syne', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fade-up 1s ease forwards 1.4s;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scroll-line 2s ease-in-out infinite;
+  }
+  @keyframes scroll-line {
+    0% { transform: scaleY(0); transform-origin: top; opacity: 1; }
+    50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    51% { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+    100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+  }
+  .scroll-text {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* Sections */
+  section {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 56px;
+  }
+  .section-label::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  /* About */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    max-width: 1200px;
+  }
+
+  .about-headline {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 52px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+  }
+
+  .about-text {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+
+  .about-highlight {
+    color: var(--text-primary);
+    font-weight: 400;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 8px;
+  }
+  .stat-item {
+    background: var(--bg);
+    padding: 28px;
+    transition: background 0.3s;
+  }
+  .stat-item:hover { background: var(--surface); }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 40px;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-num span { color: var(--gold); }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* Work / Projects */
+  .work-list {
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .work-item {
+    background: var(--bg);
+    padding: 40px 48px;
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: start;
+    gap: 32px;
+    cursor: none;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .work-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--gold);
+    transform: scaleY(0);
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .work-item:hover { background: var(--surface); }
+  .work-item:hover::before { transform: scaleY(1); }
+
+  .work-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    padding-top: 4px;
+  }
+
+  .work-content {}
+  .work-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .work-desc {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 560px;
+  }
+  .work-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .tag {
+    padding: 4px 10px;
+    border: 1px solid var(--border-bright);
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    color: var(--text-dim);
+  }
+
+  .work-status {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding-top: 4px;
+    white-space: nowrap;
+  }
+  .status-active { color: var(--gold); }
+  .status-research { color: var(--text-secondary); }
+
+  /* PAM section - special */
+  .pam-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pam-inner {
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .pam-visual {
+    position: relative;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pam-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+    animation: rotate-ring linear infinite;
+  }
+  .pam-ring:nth-child(1) {
+    width: 200px; height: 200px;
+    border-color: rgba(201,176,106,0.3);
+    animation-duration: 12s;
+  }
+  .pam-ring:nth-child(2) {
+    width: 280px; height: 280px;
+    border-color: rgba(201,176,106,0.15);
+    animation-duration: 20s;
+    animation-direction: reverse;
+  }
+  .pam-ring:nth-child(3) {
+    width: 360px; height: 360px;
+    border-color: rgba(201,176,106,0.07);
+    animation-duration: 30s;
+  }
+
+  .pam-ring::after {
+    content: '';
+    position: absolute;
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    top: -3px; left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 12px var(--gold);
+  }
+
+  @keyframes rotate-ring {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .pam-center {
+    position: absolute;
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,176,106,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    box-shadow: 0 0 40px var(--gold-glow);
+  }
+
+  .pam-headline {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(28px, 3.5vw, 44px);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+  .pam-text {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+  .pam-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,176,106,0.2);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 20px;
+  }
+
+  /* Skills/Stack */
+  .stack-section {}
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    max-width: 1200px;
+  }
+  .stack-item {
+    background: var(--bg);
+    padding: 28px 24px;
+    transition: background 0.3s;
+  }
+  .stack-item:hover { background: var(--surface); }
+  .stack-cat {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .stack-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .stack-name {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    transition: color 0.3s;
+  }
+  .stack-item:hover .stack-name { color: var(--text-primary); }
+
+  /* Thinking section */
+  .thinking-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    max-width: 1200px;
+  }
+  .philosophy-item {
+    background: var(--surface);
+    padding: 40px 32px;
+    transition: background 0.3s;
+  }
+  .philosophy-item:hover { background: var(--bg); }
+  .philosophy-icon {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border-bright);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: var(--gold);
+  }
+  .philosophy-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+  .philosophy-text {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* Contact */
+  .contact-section {
+    border-top: 1px solid var(--border);
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-bg {
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(201,176,106,0.05) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .contact-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .contact-headline {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(36px, 6vw, 72px);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .contact-sub {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    max-width: 400px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+  }
+  .contact-links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: relative;
+  }
+  .contact-link {
+    padding: 14px 28px;
+    border: 1px solid var(--border-bright);
+    color: var(--text-secondary);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: 'Syne', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s;
+    cursor: none;
+  }
+  .contact-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Footer */
+  footer {
+    padding: 32px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-text {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .footer-sig {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Divider line */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Intersection observer reveals */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  @media (max-width: 900px) {
+    nav { padding: 24px; }
+    .nav-links { display: none; }
+    section { padding: 80px 24px; }
+    .hero { padding: 0 24px; }
+    .about-grid, .pam-inner { grid-template-columns: 1fr; gap: 48px; }
+    .stack-grid { grid-template-columns: repeat(2, 1fr); }
+    .philosophy-grid { grid-template-columns: 1fr; }
+    .work-item { grid-template-columns: 48px 1fr; }
+    .work-status { display: none; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Rajesh G.</a>
+  <ul class="nav-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#pam">Research</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-orb"></div>
+  <div class="hero-content">
+    <div class="hero-tag">
+      <div class="hero-tag-dot"></div>
+      AI Engineer · AIML Student · System Builder
+    </div>
+    <h1 class="hero-name">
+      <span class="hero-name-accent">Rajesh</span><br>Gurugubelli
+    </h1>
+    <p class="hero-title">Building systems that close the gap between intent and execution.</p>
+    <p class="hero-tagline">What if software could actually close the gap between an idea and its execution? That question became an obsession.</p>
+    <div class="hero-cta">
+      <a href="#work" class="btn-primary"><span>View Work</span></a>
+      <a href="#contact" class="btn-ghost">Let's Talk</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-text">Scroll</div>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">About</div>
+  <div class="about-grid">
+    <div class="reveal">
+      <h2 class="about-headline">Third-year student.<br>First-principles builder.</h2>
+      <p class="about-text">I didn't have a natural ecosystem of AI startups and opportunity around me. <span class="about-highlight">Most of my growth came from self-learning, experimentation, and pushing through constraints.</span></p>
+      <p class="about-text">I build continuously — not because I have to, but because shipping real systems is the only way I know how to grow.</p>
+      <p class="about-text">Currently building <span class="about-highlight">PAM</span> (Persistent Activation Memory) — an experimental paradigm for making LLMs significantly more efficient through reusable activation patterns.</p>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-num">8<span>+</span></div>
+          <div class="stat-label">Systems Built</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">3<span>rd</span></div>
+          <div class="stat-label">Year B.Tech AIML</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">2</div>
+          <div class="stat-label">Active Projects</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">1</div>
+          <div class="stat-label">Driving Question</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work" style="padding-top: 0;">
+  <div class="section-label">Selected Work</div>
+  <div class="work-list reveal">
+    <div class="work-item">
+      <div class="work-num">01</div>
+      <div class="work-content">
+        <div class="work-title">CoreX Omni Agent System</div>
+        <div class="work-desc">8-layer autonomous multi-agent architecture. Chain-of-Thought orchestration, dynamic agent pooling, shared Blackboard memory with HMAC-signed writes, and failure recovery learning loops.</div>
+        <div class="work-tags">
+          <span class="tag">LangGraph</span><span class="tag">CrewAI</span><span class="tag">Claude Opus</span><span class="tag">FastAPI</span><span class="tag">Redis</span><span class="tag">ChromaDB</span>
+        </div>
+      </div>
+      <div class="work-status status-active">● Active</div>
+    </div>
+    <div class="work-item">
+      <div class="work-num">02</div>
+      <div class="work-content">
+        <div class="work-title">Emiva V1 — GTM Automation</div>
+        <div class="work-desc">AI-driven pipeline ingesting signals from Jira, GitHub, and Slack. Scores product changes as launch candidates and generates full GTM asset packs — emails, LinkedIn posts, changelogs, and internal briefs.</div>
+        <div class="work-tags">
+          <span class="tag">A2A Interface</span><span class="tag">PostgreSQL</span><span class="tag">RL-lite</span><span class="tag">LangSmith</span>
+        </div>
+      </div>
+      <div class="work-status status-active">● Active</div>
+    </div>
+    <div class="work-item">
+      <div class="work-num">03</div>
+      <div class="work-content">
+        <div class="work-title">Universal Reasoner</div>
+        <div class="work-desc">ML interpretability framework for surfacing and understanding internal model reasoning patterns. Designed to bridge the gap between black-box behavior and explainable decision paths.</div>
+        <div class="work-tags">
+          <span class="tag">ML Interpretability</span><span class="tag">Python</span>
+        </div>
+      </div>
+      <div class="work-status status-research">◌ Research</div>
+    </div>
+    <div class="work-item">
+      <div class="work-num">04</div>
+      <div class="work-content">
+        <div class="work-title">AutoML System</div>
+        <div class="work-desc">End-to-end automated machine learning pipeline with architecture search and hyperparameter optimization. Reduces time-to-model for structured prediction problems.</div>
+        <div class="work-tags">
+          <span class="tag">AutoML</span><span class="tag">Pipeline Automation</span><span class="tag">Optimization</span>
+        </div>
+      </div>
+      <div class="work-status status-research">◌ Completed</div>
+    </div>
+    <div class="work-item">
+      <div class="work-num">05</div>
+      <div class="work-content">
+        <div class="work-title">Realtime Sentiment + Anomaly Detection</div>
+        <div class="work-desc">Streaming NLP pipeline for real-time sentiment classification and statistical anomaly detection across live data feeds. Sub-second inference latency.</div>
+        <div class="work-tags">
+          <span class="tag">Streaming</span><span class="tag">NLP</span><span class="tag">Anomaly Detection</span>
+        </div>
+      </div>
+      <div class="work-status status-research">◌ Completed</div>
+    </div>
+  </div>
+</section>
+
+<!-- PAM RESEARCH -->
+<section class="pam-section" id="pam">
+  <div class="section-label">Current Research</div>
+  <div class="pam-inner">
+    <div class="pam-visual reveal">
+      <div class="pam-ring"></div>
+      <div class="pam-ring"></div>
+      <div class="pam-ring"></div>
+      <div class="pam-center">PAM</div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <h2 class="pam-headline">Persistent Activation Memory</h2>
+      <p class="pam-text">An experimental AI compression paradigm focused on making large language models significantly more efficient through reusable activation behavior during inference.</p>
+      <p class="pam-text">The core idea: can intelligence inside large models be partially represented through recurring activation patterns — instead of relying entirely on repeated full parameter execution?</p>
+      <p class="pam-text">If scalable, the concept could fundamentally change how large AI systems are deployed at the edge.</p>
+      <div class="pam-badge">
+        ◌ &nbsp; Early-Stage Research
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="section-label">Stack & Expertise</div>
+  <div class="stack-grid reveal">
+    <div class="stack-item">
+      <div class="stack-cat">Agent Frameworks</div>
+      <div class="stack-items">
+        <div class="stack-name">LangGraph</div>
+        <div class="stack-name">CrewAI</div>
+        <div class="stack-name">LangChain</div>
+        <div class="stack-name">AutoGen</div>
+        <div class="stack-name">LlamaIndex</div>
+      </div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-cat">Models & APIs</div>
+      <div class="stack-items">
+        <div class="stack-name">Claude Opus / Sonnet</div>
+        <div class="stack-name">GPT-4o</div>
+        <div class="stack-name">Anthropic API</div>
+        <div class="stack-name">OpenAI API</div>
+        <div class="stack-name">LangSmith</div>
+      </div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-cat">Infrastructure</div>
+      <div class="stack-items">
+        <div class="stack-name">FastAPI</div>
+        <div class="stack-name">Celery + Redis</div>
+        <div class="stack-name">PostgreSQL</div>
+        <div class="stack-name">ChromaDB</div>
+        <div class="stack-name">Pinecone</div>
+      </div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-cat">Core Skills</div>
+      <div class="stack-items">
+        <div class="stack-name">Python</div>
+        <div class="stack-name">Multi-agent Architecture</div>
+        <div class="stack-name">RL / Deep Q-Networks</div>
+        <div class="stack-name">ML Interpretability</div>
+        <div class="stack-name">System Design</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section class="thinking-section">
+  <div class="section-label">How I Think</div>
+  <div class="philosophy-grid reveal">
+    <div class="philosophy-item">
+      <div class="philosophy-icon">→</div>
+      <div class="philosophy-title">Ship v1, learn fast</div>
+      <div class="philosophy-text">I don't wait for perfect conditions. A rough system running in the real world teaches more than a perfect design on paper. Iterate aggressively from real feedback.</div>
+    </div>
+    <div class="philosophy-item">
+      <div class="philosophy-icon">◈</div>
+      <div class="philosophy-title">Build under constraints</div>
+      <div class="philosophy-text">Limited resources sharpen decisions. The best systems I've built came from having to do more with less — constraints force clarity of thought.</div>
+    </div>
+    <div class="philosophy-item">
+      <div class="philosophy-icon">⬡</div>
+      <div class="philosophy-title">Execution over planning</div>
+      <div class="philosophy-text">The gap between idea and impact is execution. I'm interested in systems that close this gap — tools, agents, and interfaces that turn intent into outcome.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-bg"></div>
+  <p class="contact-label reveal">Open to Opportunities</p>
+  <h2 class="contact-headline reveal">Let's build<br>something real.</h2>
+  <p class="contact-sub reveal">I'm looking for environments where ideas move fast, ownership matters, and execution is valued.</p>
+  <div class="contact-links reveal">
+    <a href="mailto:rajesh.gurugubelli006@gmail.com" class="contact-link">Email</a>
+    <a href="https://www.linkedin.com/in/rajesh-gurugubelli" target="_blank" class="contact-link">LinkedIn</a>
+    <a href="https://github.com/rajesh00618" target="_blank" class="contact-link">GitHub</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-text">© 2025 Rajesh Gurugubelli. All rights reserved.</span>
+  <span class="footer-sig">Built with intent.</span>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '16px';
+      cursor.style.height = '16px';
+      ring.style.width = '48px';
+      ring.style.height = '48px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '8px';
+      cursor.style.height = '8px';
+      ring.style.width = '32px';
+      ring.style.height = '32px';
+    });
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
